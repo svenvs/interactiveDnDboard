@@ -194,13 +194,44 @@ function toggleElementPlaying(id){
 }
 
 function getMIDIMessage(midiMessage) {
-  console.log(midiMessage.data);
-  if(midiMessage.data[0] === 144 && !sounds[midiMessage.data[1]].timeout){
+  if(sounds[midiMessage.data[1]].variant === 'DRUM'){
+    handleSoundAsDrum(midiMessage);
+  }
+
+  if(sounds[midiMessage.data[1]].variant === 'KEY'){
+    handleSoundAsKey();
+  }
+
+  if(sounds[midiMessage.data[1]].variant === 'LOOP'){
+    handleSoundAsLoop();
+  }
+
+}
+
+function handleSoundAsDrum(){
+  if(midiMessage.data[0] === 160 && !sounds[midiMessage.data[1]].timeout){
     sounds[midiMessage.data[1]].timeout = true;
-    //timeout hack because stuff is to fast else madnes :D
     setTimeout( ()=>{
       sounds[midiMessage.data[1]].timeout = false;
     }, 200)
     sounds[midiMessage.data[1]].howl.play();
-  } 
+  }
+}
+
+function handleSoundAsKey(){
+  if(midiMessage.data[0] === 160){
+    sounds[midiMessage.data[1]].howl.play();
+  } else {
+    sounds[midiMessage.data[1]].howl.stop();
+  }
+}
+
+function handleSoundAsLoop(){
+  if(midiMessage.data[0] === 160){
+    if(!sounds[midiMessage.data[1]].howl.playing()){
+      sounds[midiMessage.data[1]].howl.play();
+    } else {
+      sounds[midiMessage.data[1]].howl.stop();
+    }
+  }
 }
