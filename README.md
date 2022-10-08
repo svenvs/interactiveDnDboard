@@ -1,1 +1,2 @@
-# interactiveDnDboard
+# discodiscoapp
+serial and midi api tryout
